@@ -1,0 +1,5 @@
+from django.apps import AppConfig
+
+
+class SocialMediaPostsConfig(AppConfig):
+    name = 'social_media_posts'
