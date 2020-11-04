@@ -5,17 +5,12 @@
                 <a class="nav-link" href="{% url 'home_page' %}">خانه</a>
 
             </li>
-            <li class="nav-item active">
-                <a class="nav-link" href="{% url 'accounts:user_profile' %}">پروفایل</a>
 
-            </li>
             <li class="nav-item active">
                 <a class="nav-link" href="{% url 'posts:posts_page' %}">پست ها</a>
 
             </li>
             {% if request.user.is_authenticated %}
-
-
                 <li class="nav-item active">
                     <a class="nav-link" href="{% url 'accounts:log_out' %}">خروج</a>
 

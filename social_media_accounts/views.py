@@ -4,12 +4,14 @@ from django.contrib.auth import logout, login, authenticate
 from django.contrib import messages
 from .forms import LoginForm, RegisterForm
 from social_media_posts.models import Post
+from django.contrib.auth.decorators import login_required
 
 
 # Create your views here.
 
 
 def login_page(request):
+    next_page = request.GET.get("next")
     login_form = LoginForm(request.POST or None)
     messsage = messages.get_messages(request)
     context = {
@@ -23,7 +25,10 @@ def login_page(request):
             login(request, user)
             messages.success(request, "شما با موفقیت وارد شدید")
             context["login_form"] = LoginForm()
-            return redirect("posts:posts_page")
+            if next_page is not None:
+                return redirect(next_page)
+            else:
+                return redirect("posts:posts_page")
         else:
             login_form.add_error("username", "کاربری با این مشخصات یافت نشد")
 
@@ -45,12 +50,14 @@ def register_page(request):
     return render(request, "accounts/register_page.html", context)
 
 
+@login_required(login_url="/accounts/login/")
 def log_out(request):
     logout(request)
     messages.success(request, "شما با موفقت خارج شدید")
     return redirect("posts:posts_page")
 
 
+@login_required(login_url="/accounts/login/")
 def user_dashboard(request, user_id):
     user = get_object_or_404(User, id=user_id)
     message = messages.get_messages(request)
@@ -58,16 +65,9 @@ def user_dashboard(request, user_id):
     context = {
         "user": user,
         "posts": posts,
-        "messages" : message,
+        "messages": message,
     }
     return render(request, "accounts/user_dashboard.html", context)
 
 
-def user_profile(request):
-    user = get_object_or_404(User, id=request.user.id)
-    post = Post.objects.filter(user=user)
-    context = {
-        "posts": post,
-        "user": user,
-    }
-    return render(request, 'accounts/user_profile.html', context)
+
