@@ -2,7 +2,7 @@
 {% block title %}جزییات پست{% endblock %}
 {% block content %}
     <div class="card">
-       <p class="card-header">{{ post.user }} </p>
+        <a href="{% url 'accounts:user_dashboard' user_id=user.id %}"> <p class="card-header">{{ post.user }}</p></a>
        <p class="card-header"> {{ post.created | date  }}</p>
        <h2 class="card-body">
            {{ post.title }}

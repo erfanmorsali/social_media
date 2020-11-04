@@ -1,8 +1,9 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth import logout, login, authenticate
 from django.contrib import messages
 from .forms import LoginForm, RegisterForm
+from social_media_posts.models import Post
 
 
 # Create your views here.
@@ -46,5 +47,27 @@ def register_page(request):
 
 def log_out(request):
     logout(request)
-    messages.success(request,"شما با موفقت خارج شدید")
+    messages.success(request, "شما با موفقت خارج شدید")
     return redirect("posts:posts_page")
+
+
+def user_dashboard(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    message = messages.get_messages(request)
+    posts = Post.objects.filter(user=user)
+    context = {
+        "user": user,
+        "posts": posts,
+        "messages" : message,
+    }
+    return render(request, "accounts/user_dashboard.html", context)
+
+
+def user_profile(request):
+    user = get_object_or_404(User, id=request.user.id)
+    post = Post.objects.filter(user=user)
+    context = {
+        "posts": post,
+        "user": user,
+    }
+    return render(request, 'accounts/user_profile.html', context)

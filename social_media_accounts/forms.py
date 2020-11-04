@@ -4,8 +4,8 @@ from django.contrib.auth.models import User
 
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=50,
-                               label='نام کاربری', widget=forms.TextInput(
-            attrs={"class": "form-control", "placeholder": "نام کاربری خود را وارد کنید"})
+                               widget=forms.TextInput(
+                                   attrs={"class": "form-control", "placeholder": "نام کاربری خود را وارد کنید"})
                                )
     password = forms.CharField(label='کلمه ی عبور',
                                widget=forms.PasswordInput(

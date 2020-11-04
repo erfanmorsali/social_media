@@ -3,16 +3,16 @@
 {% block content %}
     {% include "shared/messages.html" %}
     {% for post in posts %}
-       <div class="card">
-       <p class="card-header">{{ post.user }}</p>
-       <h2 class="card-body">
-           {{ post.title }}
-       </h2>
-           <h4 class="card-body">
-               {{ post.body |truncatewords:5}}
-           </h4>
-           <a class="btn btn-info" href="{{ post.get_absolute_url }}">جزییات</a>
-           <br>
-       </div>
+        <div class="card">
+            <a href="{% url 'accounts:user_dashboard' post.user.id %}"><p class="card-header">{{ post.user }}</p></a>
+            <h2 class="card-body">
+                {{ post.title }}
+            </h2>
+            <h4 class="card-body">
+                {{ post.body |truncatewords:5 }}
+            </h4>
+            <a class="btn btn-info" href="{{ post.get_absolute_url }}">جزییات</a>
+            <br>
+        </div>
     {% endfor %}
 {% endblock %}
