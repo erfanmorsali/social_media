@@ -1,0 +1,24 @@
+{% extends 'shared/base.html' %}
+{% block title %}ورود{% endblock %}
+{% block content %}
+    {% include 'shared/messages.html' %}
+    <form action="" method="post">
+        {% csrf_token %}
+        <p>
+            <label for="{{ login_form.username.id_for_label }}">{{ login_form.username.label }}</label>
+            {{ login_form.username }}
+            {% for error in login_form.username.errors %}
+                <p style="color: red">
+                {{ error }}
+                </p>
+            {% endfor %}
+        </p>
+        <p>
+            <label for="{{ login_form.password.id_for_label }}">{{ login_form.password.label }}</label>
+            {{ login_form.password }}
+        </p>
+        <button class="btn btn-info btn-block" type="submit">
+            ورود
+        </button>
+    </form>
+{% endblock %}

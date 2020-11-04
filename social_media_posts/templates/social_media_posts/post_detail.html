@@ -1,0 +1,21 @@
+{% extends 'shared/base.html' %}
+{% block title %}جزییات پست{% endblock %}
+{% block content %}
+    {% include "shared/messages.html" %}
+    <div class="card">
+        <a href="{% url 'accounts:user_dashboard' user_id=post.user.id %}"><p class="card-header">{{ post.user }}</p>
+        </a>
+        <p class="card-header"> {{ post.created | date }}</p>
+        <h2 class="card-body">
+            {{ post.title }}
+        </h2>
+        <h4 class="card-body">
+            {{ post.body }}
+        </h4>
+        {% if request.user == post.user %}
+            <a class="btn btn-danger" href="{% url 'posts:delete_post_by_user' post_id=post.id %}">حذف پست</a>
+            <a class="btn btn-info" href="{% url 'posts:edit_post_by_user' post_id=post.id %}">ویرایش پست</a>
+        {% endif %}
+        <br>
+    </div>
+{% endblock %}
