@@ -1,0 +1,47 @@
+{% extends 'shared/base.html' %}
+{% block title %}ثبت نام{% endblock %}
+{% block content %}
+    {% include 'shared/messages.html' %}
+    <form action="" method="post">
+    {% csrf_token %}
+    <p>
+        <label for="{{ register_form.username.id_for_label }}">{{ register_form.username.label }}</label>
+        {{ register_form.username }}
+        {% for error in register_form.username.errors %}
+            <p style="color: red">
+            {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+      <p>
+        <label for="{{ register_form.email.id_for_label }}">{{ register_form.email.label }}</label>
+        {{ register_form.email }}
+        {% for error in register_form.email.errors %}
+            <p style="color: red">
+            {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+      <p>
+        <label for="{{ register_form.password.id_for_label }}">{{ register_form.password.label }}</label>
+        {{ register_form.password }}
+        {% for error in register_form.password.errors %}
+            <p style="color: red">
+            {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+      <p>
+        <label for="{{ register_form.password2.id_for_label }}">{{ register_form.password2.label }}</label>
+        {{ register_form.password2 }}
+        {% for error in register_form.password2.errors %}
+            <p style="color: red">
+            {{ error }}
+            </p>
+        {% endfor %}
+    </p>
+       <button class="btn btn-info btn-block" type="submit">
+           ثبت نام
+       </button>
+    </form>
+{% endblock %}

@@ -1,0 +1,15 @@
+{% extends 'shared/base.html' %}
+{% block title %}جزییات پست{% endblock %}
+{% block content %}
+    <div class="card">
+       <p class="card-header">{{ post.user }} </p>
+       <p class="card-header"> {{ post.created | date  }}</p>
+       <h2 class="card-body">
+           {{ post.title }}
+       </h2>
+           <h4 class="card-body">
+               {{ post.body }}
+           </h4>
+           <br>
+       </div>
+{% endblock %}
