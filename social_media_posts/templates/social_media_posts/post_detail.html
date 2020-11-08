@@ -12,10 +12,65 @@
         <h4 class="card-body">
             {{ post.body }}
         </h4>
+        {% if request.user != post.user %}
+            {% if request.user.is_authenticated %}
+                {% if not is_like %}
+                    <a class="btn btn-primary "
+                       href="{% url 'posts:like_post' post.id %}">likes {{ post.like_count }}</a>
+                {% else %}
+                    <a class="btn btn-danger "
+                       href="{% url 'posts:unlike_post' post.id %}">unlike {{ post.like_count }}</a>
+                {% endif %}
+            {% else %}
+                <button class="btn btn-primary">likes {{ post.like_count }} </button>
+            {% endif %}
+        {% endif %}
         {% if request.user == post.user %}
             <a class="btn btn-danger" href="{% url 'posts:delete_post_by_user' post_id=post.id %}">حذف پست</a>
             <a class="btn btn-info" href="{% url 'posts:edit_post_by_user' post_id=post.id %}">ویرایش پست</a>
         {% endif %}
-        <br>
+        <br><br>
     </div>
+    <hr>
+    <h2 class="text-center">نظرات کاربران</h2><br>
+    <h4 class="text-center">تعداد نظرات :{{ comments.count }}</h4><br><br>
+    {% if request.user.is_authenticated %}
+        <form action="" method="post" class="col-md-6">
+            {% csrf_token %}
+            {{ comment_form }}
+            <br>
+            <button class="btn btn-info" type="submit">ثبت</button>
+        </form>
+
+
+    {% else %}
+        <p>برای کامنت گذاشتن ابتدا باید وارد شوید</p>
+    {% endif %}
+    <br>
+    {% for comment in comments %}
+        <div class="card bg-dark text-white">
+            <p class="card card-header">
+                {{ comment.user.username }}
+            </p>
+            <p class="card card-header">
+                {{ comment.body }}
+            </p>
+            {% if request.user.is_authenticated %}
+                <form action="{% url 'posts:add_reply' post.id comment.id %}" method="post">
+                    {% csrf_token %}
+
+                    {{ reply_form.as_p }}
+                    <button type="submit">ثبت</button>
+                </form>
+            {% else %}
+                <p class="ml-3">برای ثبت پاسخ باید وارد شوید</p>
+            {% endif %}
+            {% for reply in comment.replycomment.all %}
+                <p class="bg-primary text-white m-5 p-3">{{ reply.user }}<br>{{ reply.body }}</p>
+            {% endfor %}
+        </div> <br>
+    {% empty %}
+        <h2 class="text-center">کاربران برای این پست نظری ثبت نکرده اند</h2>
+
+    {% endfor %}
 {% endblock %}

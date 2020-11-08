@@ -24,3 +24,15 @@ def create_user_profile(sender, instance, *args, **kwargs):
 
 
 post_save.connect(create_user_profile, User)
+
+
+class FollowSystem(models.Model):
+    follower = models.ForeignKey(User, on_delete=models.CASCADE, related_name="follower")
+    following = models.ForeignKey(User, on_delete=models.CASCADE, related_name="following")
+    created = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ("-created",)
+
+    def __str__(self):
+        return self.follower.username + "--> " + self.following.username

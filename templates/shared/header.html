@@ -11,6 +11,11 @@
 
             </li>
             {% if request.user.is_authenticated %}
+
+                <li class="nav-item active">
+                    <a class="nav-link" href="{% url 'accounts:user_dashboard' request.user.id %}">حساب کاربری</a>
+
+                </li>
                 <li class="nav-item active">
                     <a class="nav-link" href="{% url 'accounts:log_out' %}">خروج</a>
 
@@ -21,6 +26,10 @@
                     <a class="nav-link" href="{% url 'accounts:login_page' %}">ورود</a>
 
                 </li>
+{#                <li class="nav-item active">#}
+{#                    <a class="nav-link" href="{% url 'accounts:phone_login' %}">ورود با شماره تلفن</a>#}
+{##}
+{#                </li>#}
 
                 <li class="nav-item active">
                     <a class="nav-link" href="{% url 'accounts:register_page' %}">ثبت نام</a>

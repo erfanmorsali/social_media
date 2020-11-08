@@ -1,0 +1,9 @@
+{% extends 'shared/base.html' %}
+{% block title %}تغییر اطلاعات کاربری{% endblock %}
+{% block content %}
+    <form action="" method="post">
+        {% csrf_token %}
+        {{ edit_form.as_p }}
+        <button class="btn-info btn" type="submit">ثبت</button>
+    </form>
+{% endblock %}

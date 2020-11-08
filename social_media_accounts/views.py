@@ -2,9 +2,10 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.models import User
 from django.contrib.auth import logout, login, authenticate
 from django.contrib import messages
-from .forms import LoginForm, RegisterForm
+from .forms import LoginForm, RegisterForm, EditProfileForm, PhoneLoginForm
 from social_media_posts.models import Post
 from django.contrib.auth.decorators import login_required
+from .models import UserProfile, FollowSystem
 
 
 # Create your views here.
@@ -57,8 +58,13 @@ def log_out(request):
     return redirect("posts:posts_page")
 
 
-@login_required(login_url="/accounts/login/")
+@login_required(login_url="/accounts/login")
 def user_dashboard(request, user_id):
+    is_following = False
+    follow = FollowSystem.objects.filter(follower=request.user, following_id=user_id)
+    if follow.exists():
+        is_following = True
+    follower_count = FollowSystem.objects.filter(following__id=user_id)
     user = get_object_or_404(User, id=user_id)
     message = messages.get_messages(request)
     posts = Post.objects.filter(user=user)
@@ -66,8 +72,52 @@ def user_dashboard(request, user_id):
         "user": user,
         "posts": posts,
         "messages": message,
+        "is_following": is_following,
+        "followers": follower_count,
     }
     return render(request, "accounts/user_dashboard.html", context)
 
 
+@login_required(login_url="/accounts/login/")
+def edit_profile(request, user_id):
+    user = get_object_or_404(User, id=request.user.id)
+    profile = get_object_or_404(UserProfile, user=user)
+    edit_form = EditProfileForm(request.POST or None, instance=profile,
+                                initial={"email": user.email, "username": user.username})
+    context = {
+        "edit_form": edit_form
+    }
+    if edit_form.is_valid():
+        edit_form.save()
+        user.email = edit_form.cleaned_data.get("email")
+        user.username = edit_form.cleaned_data.get("username")
+        user.save()
+        messages.success(request, "اطلاعات ویرایش شد")
+        return redirect("accounts:user_dashboard", user_id)
+    return render(request, "accounts/edit_profile.html", context)
 
+
+@login_required(login_url='/accounts/login/')
+def follow(request, user_id):
+    follower = request.user
+    following = get_object_or_404(User, id=user_id)
+    is_follow = FollowSystem.objects.filter(follower=follower, following=following)
+    if is_follow.exists():
+        return redirect("accounts:user_dashboard", user_id)
+    else:
+        FollowSystem.objects.create(follower=follower, following=following)
+        messages.success(request, f'{following} فالو شد')
+        return redirect("accounts:user_dashboard", user_id)
+
+
+@login_required(login_url='/accounts/login/')
+def unfollow(request, user_id):
+    follower = request.user
+    following = get_object_or_404(User, id=user_id)
+    is_follow = FollowSystem.objects.filter(follower=follower, following=following)
+    if is_follow.exists():
+        is_follow.delete()
+        messages.success(request, f'{following} آنفالو شد ')
+        return redirect('accounts:user_dashboard', user_id)
+    else:
+        return redirect('accounts:user_dashboard', user_id)

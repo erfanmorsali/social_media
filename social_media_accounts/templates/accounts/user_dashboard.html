@@ -1,6 +1,10 @@
 {% extends 'shared/base.html' %}
+{% load static %}
 {% block title %}{{ user.username }}  صفحه ی{% endblock %}
 
+{% block js_files %}
+    <script src="{% static 'accounts/js/script.js' %}"></script>
+{% endblock %}
 {% block content %}
     {% include 'shared/messages.html' %}
 
@@ -10,6 +14,18 @@
     <p class="text-center">
         {{ user.userprofile.bio }}
     </p>
+    <p>تعداد فالوورها :{{ followers.count }}</p>
+    {% if request.user.id != user.id %}
+        {% if is_following %}
+            <a href="{% url 'accounts:unfollow' user.id %}">
+                <button style="margin-left: 860px;" class="btn btn-warning">unfollow</button>
+            </a>
+        {% else %}
+            <a href="{% url 'accounts:follow' user.id %}">
+                <button style="margin-left: 860px;" class="btn btn-primary">follow</button>
+            </a>
+        {% endif %}
+    {% endif %}
     <br><br>
 
     <h3>
@@ -17,6 +33,7 @@
     </h3><br>
     {% if request.user == user %}
         <a class="btn btn-info" href="{% url 'posts:add_post_by_user' %}">ایجاد پست جدید</a>
+        <a class="btn btn-info" href="{% url 'accounts:edit_profile' request.user.id %}">تغییر اطلاعات کاربری</a>
     {% endif %}
 
     <hr><br><br>

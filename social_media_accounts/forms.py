@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth.models import User
 
+from social_media_accounts.models import UserProfile
+
 
 class LoginForm(forms.Form):
     username = forms.CharField(max_length=50,
@@ -51,3 +53,23 @@ class RegisterForm(forms.Form):
         if password2 != password:
             raise forms.ValidationError("کلمه های عبور مغایرت دارند")
         return password2
+
+
+class EditProfileForm(forms.ModelForm):
+    username = forms.CharField()
+    email = forms.EmailField(widget=forms.EmailInput)
+
+    class Meta:
+        model = UserProfile
+        fields = ("age", "phone", "bio")
+
+
+class PhoneLoginForm(forms.Form):
+    phone = forms.IntegerField()
+
+    def clean_phone(self):
+        phone = self.cleaned_data.get("phone")
+        qs = UserProfile.objects.filter(phone=phone)
+        if qs.exists():
+            return phone
+        raise forms.ValidationError("کاربری با این شماره تلفن یافت نشد")
