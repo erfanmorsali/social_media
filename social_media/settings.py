@@ -18,6 +18,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'social_media_posts',
     'social_media_accounts',
+    'social_media_apis',
+    'rest_framework',
+
 ]
 
 MIDDLEWARE = [
@@ -103,3 +106,14 @@ STATIC_ROOT = os.path.join(BASE_DIR, "static_cdn", "static_root")
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, "static_cdn", "media_root")
+
+REST_FRAMEWORK = {
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticatedOrReadOnly',
+
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': (
+        'rest_framework_simplejwt.authentication.JWTAuthentication',
+
+    )
+}

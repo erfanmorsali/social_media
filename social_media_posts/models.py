@@ -3,9 +3,19 @@ from django.db import models
 from django.urls import reverse
 from django.db.models.signals import pre_save
 from django.utils.text import slugify
+from django.db.models import Q
 
 
 # Create your models here.
+class PostManager(models.Manager):
+    def search(self, key):
+        lookup = (
+                Q(title__icontains=key) |
+                Q(body__icontains=key) |
+                Q(user__username__icontains=key)
+        )
+        return self.get_queryset().filter(lookup).distinct()
+
 
 class Post(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="کاربر")
@@ -13,6 +23,7 @@ class Post(models.Model):
     body = models.TextField(verbose_name="متن پست")
     slug = models.SlugField(unique=True, allow_unicode=True, verbose_name='نام در url')
     created = models.DateTimeField(auto_now_add=True, verbose_name='تاریخ تبت پست')
+    objects = PostManager()
 
     class Meta:
         verbose_name = "پست"

@@ -23,6 +23,8 @@ from .views import home_page
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', home_page, name='home_page'),
+    path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('', include('social_media_apis.urls', namespace='apis')),
     path('', include('social_media_posts.urls', namespace="posts")),
     path('', include('social_media_accounts.urls', namespace="accounts")),
 ]
